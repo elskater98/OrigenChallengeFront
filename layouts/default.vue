@@ -9,7 +9,7 @@
         </v-btn>
         <v-btn to="/docs" depressed nuxt>My Collab</v-btn>
         <v-spacer></v-spacer>
-        <div v-if="isLogged">
+        <div v-show="!isLogged">
           <v-btn depressed @click="signupDialog=true">
             <v-icon medium>mdi-account</v-icon>
             Sign Up
@@ -19,7 +19,7 @@
             Log In
           </v-btn>
         </div>
-        <div v-if="!isLogged">
+        <div v-show="isLogged">
           <v-btn depressed @click="logout">
             <v-icon medium>mdi-exit</v-icon>
             Log Out
@@ -33,7 +33,7 @@
                 max-width="600px"
                 v-model="loginDialog">
         <v-card>
-          <form @submit.prevent="login">
+          <form @submit.prevent="login()">
             <v-card-title>
               <span class="headline">Log in</span>
             </v-card-title>
@@ -138,18 +138,33 @@ import AuthService from "~/services/AuthService";
 export default {
   name: "default",
   data() {
-    return {email: "", password: "", loginDialog: false, signupDialog: false, isLogged:true}
+    return {email: "", password: "", loginDialog: false, signupDialog: false,isLogged:AuthService.isLogged()}
   },
   methods: {
-    login () {
-      AuthService.login()
+    async login () {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            username: this.email,
+            password: this.password
+          }
+        }).then((value => {
+          sessionStorage.setItem("token",value.data.access);
+          this.isLogged=AuthService.isLogged();
+        }));
+      } catch (e) {
+        this.error = e.response.data.message
+      }
+      this.loginDialog = false;
     },
     signup(){
       this.signupDialog = false;
     },
     logout(){
-      //TODO: Close Session, remove storage
+      sessionStorage.removeItem("token");
+      this.isLogged=AuthService.isLogged();
     }
+
   }
 }
 </script>
