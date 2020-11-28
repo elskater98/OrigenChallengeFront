@@ -79,8 +79,8 @@ export default {
     console.log("Starting connection to WebSocket Server")
     this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
 
-    this.connection.onmessage = function(event) {
-      console.log(event);
+    this.connection.onmessage = function (event) {
+      console.log(event)
     }
 
     this.connection.onopen = function(event) {
@@ -91,10 +91,7 @@ export default {
   },
   methods:{
     sendChange(){
-      this.connection.send(JSON.stringify(this.getChanges()));
-    },
-    updateData(){
-
+        this.connection.send(JSON.stringify(this.getChanges()));
     },
     getChanges(){
     return {message:{checkbox1:this.$data.checkbox1,
