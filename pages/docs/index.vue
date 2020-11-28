@@ -45,8 +45,8 @@ export default {
       }))
     },
     selectItem (item) {
-      this.$route.push('/docs')
-
+      let route = this.$route.name+'/'+item.session_id;
+      this.$router.push({path:route});
     }
   }
 }
