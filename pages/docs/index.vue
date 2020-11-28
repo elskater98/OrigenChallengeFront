@@ -9,14 +9,14 @@
               Name
             </th>
             <th class="text-left">
-              Shared date
+              Created Date
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="item in list_sessions" :key="item.session_id"  @click="selectItem(item)">
-            <td>{{ item.shared_as }}</td>
-            <td>{{ item.date_shared }}</td>
+          <tr v-for="item in sessions" :key="item.session_id"  @click="selectItem(item)">
+            <td>{{ item.name }}</td>
+            <td>{{ item.date_created }}</td>
           </tr>
           </tbody>
         </template>
@@ -41,7 +41,7 @@ export default {
   methods: {
     async fetch () {
       await this.$axios.$get('/chat/sessions/').then((value => {
-        this.list_sessions = value;
+        this.sessions = value;
       }))
 
     },

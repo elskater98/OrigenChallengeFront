@@ -54,7 +54,7 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {baseURL:'http://josalhor.ddns.net:7987'},
+  axios: {baseURL:'https://josalhor.ddns.net:7987'},
 
   auth: {
     strategies: {

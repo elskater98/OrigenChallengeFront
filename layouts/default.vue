@@ -20,13 +20,10 @@
           </v-btn>
         </div>
         <div v-show="isLogged">
-          <v-btn depressed @click="logout">
-            <v-icon medium>mdi-exit</v-icon>
-            Log Out
+          <v-btn depressed  @click="notDialog=true">
+            <v-icon medium>mdi-bell-ring</v-icon>
           </v-btn>
-          <v-btn depressed @click="logout">
-            <v-icon medium>mdi-exit</v-icon>
-            Log Out
+          <v-btn depressed @click="logout">Log out
           </v-btn>
         </div>
 
@@ -127,6 +124,54 @@
         </v-card>
       </v-dialog>
 
+      <v-dialog max-width="600px" v-model="notDialog">
+       <v-card>
+         <v-card-text>
+           <!--for-->
+           <v-banner two-line>
+             <v-avatar
+               slot="icon"
+               color="deep-purple accent-4"
+               size="40"
+             >
+               <v-icon
+                 icon="mdi-lock"
+                 color="white"
+               >
+                 mdi-lock
+               </v-icon>
+             </v-avatar>
+
+             Three line text string example with two actions. One to two lines is preferable. Three lines should be considered the maximum string length on desktop in order to keep messages short and actionable.
+
+             <template v-slot:actions>
+               <v-btn
+                 text
+                 color="deep-purple accent-4"
+               >
+                 Action
+               </v-btn>
+               <v-btn
+                 text
+                 color="deep-purple accent-4"
+               >
+                 Action
+               </v-btn>
+             </template>
+           </v-banner>
+
+         </v-card-text>
+         <v-card-actions>
+           <v-spacer></v-spacer>
+           <v-btn
+             color="blue darken-1"
+             text
+             @click="notDialog = false">Close
+           </v-btn>
+         </v-card-actions>
+       </v-card>
+      </v-dialog>
+
       <Nuxt/>
     </div>
   </v-app>
@@ -140,7 +185,7 @@ const axios = require('axios');
 export default {
   name: "default",
   data() {
-    return {username: "", password: "",sUsername: "", sPassword: "", loginDialog: false, signupDialog: false, isLogged: AuthService.isLogged(),error:[]}
+    return {username: "", password: "",sUsername: "", sPassword: "", loginDialog: false, signupDialog: false, notDialog: false, isLogged: AuthService.isLogged(),error:[]}
   },
   methods: {
     async login() {
