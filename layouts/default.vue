@@ -133,6 +133,8 @@
 
 <script>
 
+import AuthService from "~/services/AuthService";
+
 export default {
   name: "default",
   data() {
@@ -140,7 +142,7 @@ export default {
   },
   methods: {
     login () {
-      AuthService.instance;
+      AuthService.login()
     },
     signup(){
       this.signupDialog = false;

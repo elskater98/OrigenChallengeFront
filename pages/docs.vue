@@ -19,6 +19,9 @@
               </v-list-item>
             </v-card>
           </v-row>
+          <v-row>
+            <model3-d></model3-d>
+          </v-row>
         </v-col>
         <v-col>
           <v-row>
@@ -66,10 +69,12 @@
 </template>
 
 <script>
+import Model3D from "~/components/model3D";
 const md5 = require('md5');
 export default {
 
   name: "docs",
+  components: {Model3D},
   data() {
     return {
       checkbox1: true,
