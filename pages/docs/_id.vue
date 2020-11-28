@@ -1,5 +1,7 @@
 <template>
-  <model3-d></model3-d>
+  <div>
+
+  </div>
 </template>
 
 <script>
@@ -43,7 +45,7 @@ export default {
   },
   created() {
     console.log("Starting connection to WebSocket Server")
-    this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
+    this.connection = new WebSocket("wss://josalhor.ddns.net:7987/ws/chat/example/")
     let x = this;
     this.connection.onmessage = function (event) {
       let aux = JSON.parse(event.data);
