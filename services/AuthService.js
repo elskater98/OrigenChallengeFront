@@ -5,11 +5,6 @@ class AuthService {
     sessionStorage.clear();
   }
 
-  signup(username,password){
-    console.log(username,password);
-
-  }
-
   isLogged() {
     return sessionStorage.getItem("token") != null;
   }

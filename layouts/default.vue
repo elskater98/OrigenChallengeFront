@@ -158,10 +158,10 @@ export default {
     signup() {
       this.$axios.$post('/chat/account/register',{username:this.sUsername,password:this.sPassword}).then((value)=>{
         console.log(value);
+        this.signupDialog = false;
       }).catch((error)=>{
         console.log(error)
       });
-      this.signupDialog = false;
     },
     logout() {
       sessionStorage.removeItem("token");
