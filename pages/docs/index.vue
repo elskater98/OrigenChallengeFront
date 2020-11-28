@@ -9,20 +9,19 @@
               Name
             </th>
             <th class="text-left">
-              Calories
+              Shared date
             </th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="item in list_sessions" :key="item.session_id"  @click="selectItem(item)">
             <td>{{ item.shared_as }}</td>
-            <td>{{ item.session_id }}</td>
+            <td>{{ item.date_shared }}</td>
           </tr>
           </tbody>
         </template>
       </v-simple-table>
     </v-container>
-    <model3-d></model3-d>
   </div>
 </template>
 
@@ -34,16 +33,17 @@ export default {
   name: "index",
   components: {Model3D},
   data() {
-    return {list_sessions:[]}
+    return {sessions:[]}
   },
   created () {
     this.fetch()
   },
   methods: {
     async fetch () {
-      await this.$axios.$get('/chat/list_sessions/').then((value => {
+      await this.$axios.$get('/chat/sessions/').then((value => {
         this.list_sessions = value;
       }))
+
     },
     selectItem (item) {
       let route = this.$route.name+'/'+item.session_id;

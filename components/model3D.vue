@@ -1,16 +1,5 @@
 <template>
   <div>
-    <div id="info">
-      <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
-      - the Utah Teapot<br />
-      from
-      <a
-        href="https://www.udacity.com/course/interactive-3d-graphics--cs291"
-        target="_blank"
-        rel="noopener"
-        >Udacity Interactive 3D Graphics</a
-      >
-    </div>
     <div id="3DContainer"></div>
     <script type="module">
       import * as THREE from "../build/three.module.js";
@@ -307,6 +296,7 @@
 
       //
 
+
       function render() {
         if (
           effectController.newTess !== tess ||
@@ -327,7 +317,6 @@
 
           createNewTeapot();
         }
-
         // We're a bit lazy here. We could check to see if any material attributes changed and update
         // only if they have. But, these calls are cheap enough and this is just a demo.
         phongMaterial.shininess = effectController.shininess;
@@ -425,6 +414,39 @@
 <script>
 export default {
   name: "model3D",
+  data(){
+    return {};
+  },
+  computed(){
+    this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
+    let x = this;
+    this.connection.onmessage = function (event) {
+      let aux = JSON.parse(event.data);
+      const res = md5(JSON.stringify(aux));
+      if (!x.sent_local.has(res)){
+        x.summary = aux.message.summary;
+      }
+    }
+
+    this.connection.onopen = function (event) {
+      console.log(event)
+      console.log("Successfully connected to the echo websocket server...")
+    }
+  },
+  methods: {
+      sendChange() {
+        let msg = JSON.stringify(this.getChanges());
+        this.sent_local.add(md5(msg));
+        this.connection.send(msg);
+      },
+      getChanges() {
+        return {
+          message: {
+            checkbox1: this.$data.checkbox1
+          }
+        };
+      }
+  },
 };
 </script>
 

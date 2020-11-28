@@ -1,7 +1,5 @@
 <template>
-  <div>
-    
-  </div>
+  <model3-d></model3-d>
 </template>
 
 <script>

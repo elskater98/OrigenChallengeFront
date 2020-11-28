@@ -24,6 +24,10 @@
             <v-icon medium>mdi-exit</v-icon>
             Log Out
           </v-btn>
+          <v-btn depressed @click="logout">
+            <v-icon medium>mdi-exit</v-icon>
+            Log Out
+          </v-btn>
         </div>
 
       </v-toolbar>
