@@ -11,7 +11,7 @@
         >Udacity Interactive 3D Graphics</a
       >
     </div>
-
+    <div id="3DContainer"></div>
     <script type="module">
       import * as THREE from "../build/three.module.js";
 
@@ -50,8 +50,7 @@
       render();
 
       function init() {
-        const container = document.createElement("div");
-        document.body.appendChild(container);
+        const container = document.getElementById("3DContainer");
 
         const canvasWidth = window.innerWidth;
         const canvasHeight = window.innerHeight;
