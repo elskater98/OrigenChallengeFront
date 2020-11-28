@@ -63,7 +63,6 @@
       </v-row>
     </v-container>
   </div>
-
 </template>
 
 <script>
@@ -88,7 +87,6 @@ export default {
     sendChange() {
       let msg = JSON.stringify(this.getChanges());
       this.sent_local.add(md5(msg));
-      console.log(this.sent_local);
       this.connection.send(msg);
     },
     getChanges() {
@@ -113,7 +111,6 @@ export default {
       let aux = JSON.parse(event.data);
       const res = md5(JSON.stringify(aux));
       if (!x.sent_local.has(res)){
-        console.log("Hi");
         x.checkbox1 = aux.message.checkbox1;
         x.checkbox2 = aux.message.checkbox2;
         x.slider = aux.message.slider;
