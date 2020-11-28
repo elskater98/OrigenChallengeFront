@@ -67,7 +67,9 @@
 </template>
 
 <script>
+const md5 = require('md5');
 export default {
+
   name: "docs",
   data() {
     return {
@@ -78,14 +80,16 @@ export default {
       subtitle: "Subtitle",
       header: "Header",
       summary: "",
-      connection: null
+      connection: null,
+      sent_local: new Set()
     }
   },
   methods: {
     sendChange() {
-      setTimeout(()=>{
-        this.connection.send(JSON.stringify(this.getChanges()));
-      },1000)
+      let msg = JSON.stringify(this.getChanges());
+      this.sent_local.add(md5(msg));
+      console.log(this.sent_local);
+      this.connection.send(msg);
     },
     getChanges() {
       return {
@@ -107,12 +111,16 @@ export default {
     let x = this;
     this.connection.onmessage = function (event) {
       let aux = JSON.parse(event.data);
-      x.checkbox1=aux.message.checkbox1;
-      x.checkbox2=aux.message.checkbox2;
-      x.slider=aux.message.slider;
-      x.textarea1=aux.message.textarea1;
-      x.header=aux.message.header;
-      x.summary=aux.message.summary;
+      const res = md5(JSON.stringify(aux));
+      if (!x.sent_local.has(res)){
+        console.log("Hi");
+        x.checkbox1 = aux.message.checkbox1;
+        x.checkbox2 = aux.message.checkbox2;
+        x.slider = aux.message.slider;
+        x.textarea1 = aux.message.textarea1;
+        x.header = aux.message.header;
+        x.summary = aux.message.summary;
+      }
     }
 
     this.connection.onopen = function (event) {
