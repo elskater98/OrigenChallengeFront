@@ -7,7 +7,7 @@
           <v-icon medium>mdi-home</v-icon>
           Home
         </v-btn>
-        <v-btn to="/docs" depressed nuxt>My Collab</v-btn>
+        <v-btn to="/docs" depressed nuxt>My Collabs</v-btn>
         <v-spacer></v-spacer>
         <div v-show="!isLogged">
           <v-btn depressed @click="signupDialog=true">
@@ -42,7 +42,7 @@
                 <v-row>
                   <v-col cols="12">
                     <v-text-field
-                      v-model="email"
+                      v-model="username"
                       label="Username"
                       required
                     ></v-text-field>
@@ -88,18 +88,14 @@
                 <v-row>
                   <v-col cols="12">
                     <v-text-field
+                      v-model="sUsername"
                       label="Username"
                       required
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
-                      label="Email"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
+                      v-model="sPassword"
                       label="Password"
                       type="password"
                       required
@@ -126,6 +122,7 @@
           </form>
         </v-card>
       </v-dialog>
+
       <Nuxt/>
     </div>
   </v-app>
@@ -134,18 +131,19 @@
 <script>
 
 import AuthService from "~/services/AuthService";
+const axios = require('axios');
 
 export default {
   name: "default",
   data() {
-    return {email: "", password: "", loginDialog: false, signupDialog: false, isLogged: AuthService.isLogged()}
+    return {username: "", password: "",sUsername: "", sPassword: "", loginDialog: false, signupDialog: false, isLogged: AuthService.isLogged(),error:[]}
   },
   methods: {
     async login() {
       try {
         await this.$auth.loginWith('local', {
           data: {
-            username: this.email,
+            username: this.username,
             password: this.password
           }
         }).then((value => {
@@ -158,6 +156,11 @@ export default {
       }
     },
     signup() {
+      this.$axios.$post('/chat/account/register',{username:this.sUsername,password:this.sPassword}).then((value)=>{
+        console.log(value);
+      }).catch((error)=>{
+        console.log(error)
+      });
       this.signupDialog = false;
     },
     logout() {
