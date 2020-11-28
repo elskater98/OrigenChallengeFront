@@ -23,7 +23,7 @@
         <v-col>
           <v-row>
             <v-slider
-              @change="getChanges"
+              @change="sendChange"
               v-model="slider.val"
               :label="slider.label"
               :thumb-color="slider.color"
@@ -34,19 +34,19 @@
           </v-row>
           <v-row>
             <v-checkbox
-              @change="getChanges"
+              @change="sendChange"
               v-model="checkbox1"
               :label="'Header'"
             ></v-checkbox>
             <v-checkbox style="margin-left: 10%"
                         v-model="checkbox2"
                         :label="'Subtitle'"
-                        @change="getChanges"
+                        @change="sendChange"
             ></v-checkbox>
           </v-row>
           <v-row>
             <v-textarea
-              @keyup="getChanges"
+              @keyup="sendChange"
               filled
               name="input-7-4"
               label="Filled textarea"
@@ -71,27 +71,42 @@ export default {
       textarea1:"",
       subtitle:"subtitle",
       header:"Header",
-      summary:""
+      summary:"",
+      connection:null
     }
+  },
+  created() {
+    console.log("Starting connection to WebSocket Server")
+    this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
+
+    this.connection.onmessage = function(event) {
+      console.log(event);
+    }
+
+    this.connection.onopen = function(event) {
+      console.log(event)
+      console.log("Successfully connected to the echo websocket server...")
+    }
+
   },
   methods:{
     sendChange(){
-
+      this.connection.send(JSON.stringify(this.getChanges()));
     },
-    recoverData(){
+    updateData(){
 
     },
     getChanges(){
-    return {checkbox1:this.$data.checkbox1,
+    return {message:{checkbox1:this.$data.checkbox1,
         checkbox2:this.$data.checkbox2,
         slider: {label:'slider',val:this.$data.slider.val,color:'red'},
         textarea1:this.$data.textarea1,
         subtitle:this.$data.subtitle,
         header:this.$data.header,
-        summary:this.$data.summary};
+        summary:this.$data.summary}};
     }
 
-  }
+  },
 }
 </script>
 
