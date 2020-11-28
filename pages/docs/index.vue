@@ -22,6 +22,7 @@
         </template>
       </v-simple-table>
     </v-container>
+    <model3-d></model3-d>
   </div>
 </template>
 
