@@ -68,7 +68,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-               type="submit">Save
+                type="submit">Save
               </v-btn>
             </v-card-actions>
           </form>
@@ -79,7 +79,7 @@
                 max-width="600px"
                 v-model="signupDialog">
         <v-card>
-          <form  @submit.prevent="signup">
+          <form @submit.prevent="signup">
             <v-card-title>
               <span class="headline">Sign Up</span>
             </v-card-title>
@@ -138,10 +138,10 @@ import AuthService from "~/services/AuthService";
 export default {
   name: "default",
   data() {
-    return {email: "", password: "", loginDialog: false, signupDialog: false,isLogged:AuthService.isLogged()}
+    return {email: "", password: "", loginDialog: false, signupDialog: false, isLogged: AuthService.isLogged()}
   },
   methods: {
-    async login () {
+    async login() {
       try {
         await this.$auth.loginWith('local', {
           data: {
@@ -149,22 +149,21 @@ export default {
             password: this.password
           }
         }).then((value => {
-          sessionStorage.setItem("token",value.data.access);
-          this.isLogged=AuthService.isLogged();
+          sessionStorage.setItem("token", value.data.access);
+          this.isLogged = AuthService.isLogged();
+          this.loginDialog = false;
         }));
       } catch (e) {
         this.error = e.response.data.message
       }
-      this.loginDialog = false;
     },
-    signup(){
+    signup() {
       this.signupDialog = false;
     },
-    logout(){
+    logout() {
       sessionStorage.removeItem("token");
-      this.isLogged=AuthService.isLogged();
+      this.isLogged = AuthService.isLogged();
     }
-
   }
 }
 </script>
