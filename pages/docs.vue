@@ -13,7 +13,7 @@
                   <v-list-item-title v-show="checkbox1" class="headline mb-1">
                     {{ header }}
                   </v-list-item-title>
-                  <v-list-item-subtitle v-show="checkbox2">{{subtitle}}</v-list-item-subtitle>
+                  <v-list-item-subtitle v-show="checkbox2">{{ subtitle }}</v-list-item-subtitle>
                   {{ summary }}
                 </v-list-item-content>
               </v-list-item>
@@ -45,6 +45,12 @@
             ></v-checkbox>
           </v-row>
           <v-row>
+            <v-text-field v-model="header" label="Header"></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field v-model="subtitle" label="Subtitle"></v-text-field>
+          </v-row>
+          <v-row>
             <v-textarea
               @keyup="sendChange"
               filled
@@ -63,46 +69,56 @@
 <script>
 export default {
   name: "docs",
-  data(){
+  data() {
     return {
-      checkbox1:true,
-      checkbox2:true,
-      slider:{label:'slider',val:350,color:'red'},
-      textarea1:"",
-      subtitle:"subtitle",
-      header:"Header",
-      summary:"",
-      connection:null
+      checkbox1: true,
+      checkbox2: true,
+      slider: {label: 'slider', val: 350, color: 'red'},
+      textarea1: "",
+      subtitle: "Subtitle",
+      header: "Header",
+      summary: "",
+      connection: null
+    }
+  },
+  methods: {
+    sendChange() {
+      setTimeout(()=>{
+        this.connection.send(JSON.stringify(this.getChanges()));
+      },1000)
+    },
+    getChanges() {
+      return {
+        message: {
+          checkbox1: this.$data.checkbox1,
+          checkbox2: this.$data.checkbox2,
+          slider: {label: 'slider', val: this.$data.slider.val, color: 'red'},
+          textarea1: this.$data.textarea1,
+          subtitle: this.$data.subtitle,
+          header: this.$data.header,
+          summary: this.$data.summary
+        }
+      };
     }
   },
   created() {
     console.log("Starting connection to WebSocket Server")
     this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
-
+    let x = this;
     this.connection.onmessage = function (event) {
-      console.log(event)
+      let aux = JSON.parse(event.data);
+      x.checkbox1=aux.message.checkbox1;
+      x.checkbox2=aux.message.checkbox2;
+      x.slider=aux.message.slider;
+      x.textarea1=aux.message.textarea1;
+      x.header=aux.message.header;
+      x.summary=aux.message.summary;
     }
 
-    this.connection.onopen = function(event) {
+    this.connection.onopen = function (event) {
       console.log(event)
       console.log("Successfully connected to the echo websocket server...")
     }
-
-  },
-  methods:{
-    sendChange(){
-        this.connection.send(JSON.stringify(this.getChanges()));
-    },
-    getChanges(){
-    return {message:{checkbox1:this.$data.checkbox1,
-        checkbox2:this.$data.checkbox2,
-        slider: {label:'slider',val:this.$data.slider.val,color:'red'},
-        textarea1:this.$data.textarea1,
-        subtitle:this.$data.subtitle,
-        header:this.$data.header,
-        summary:this.$data.summary}};
-    }
-
   },
 }
 </script>
