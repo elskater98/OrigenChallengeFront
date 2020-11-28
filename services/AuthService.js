@@ -1,19 +1,14 @@
-import axios from 'axios';
-const API_URL = 'http://josalhor.ddns.net:7987/';
-
+const axios = require('axios');
 class AuthService {
 
-  login(username,password){
-    return axios.post(API_URL+'/api/token/',{
-      username:username,password:password
-    })
+  logout() {
+    sessionStorage.clear();
   }
 
-  logout(){
-    localStorage.clear();
+  isLogged() {
+    return sessionStorage.getItem("token") != null;
   }
-
 
 }
 
-export default  new AuthService();
+export default new AuthService();

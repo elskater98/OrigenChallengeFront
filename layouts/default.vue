@@ -7,9 +7,9 @@
           <v-icon medium>mdi-home</v-icon>
           Home
         </v-btn>
-        <v-btn to="/docs" depressed nuxt>My Collab</v-btn>
+        <v-btn to="/docs" depressed nuxt>My Collabs</v-btn>
         <v-spacer></v-spacer>
-        <div v-if="isLogged">
+        <div v-show="!isLogged">
           <v-btn depressed @click="signupDialog=true">
             <v-icon medium>mdi-account</v-icon>
             Sign Up
@@ -19,7 +19,7 @@
             Log In
           </v-btn>
         </div>
-        <div v-if="!isLogged">
+        <div v-show="isLogged">
           <v-btn depressed @click="logout">
             <v-icon medium>mdi-exit</v-icon>
             Log Out
@@ -33,7 +33,7 @@
                 max-width="600px"
                 v-model="loginDialog">
         <v-card>
-          <form @submit.prevent="login">
+          <form @submit.prevent="login()">
             <v-card-title>
               <span class="headline">Log in</span>
             </v-card-title>
@@ -42,7 +42,7 @@
                 <v-row>
                   <v-col cols="12">
                     <v-text-field
-                      v-model="email"
+                      v-model="username"
                       label="Username"
                       required
                     ></v-text-field>
@@ -68,7 +68,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-               type="submit">Save
+                type="submit">Save
               </v-btn>
             </v-card-actions>
           </form>
@@ -79,7 +79,7 @@
                 max-width="600px"
                 v-model="signupDialog">
         <v-card>
-          <form  @submit.prevent="signup">
+          <form @submit.prevent="signup">
             <v-card-title>
               <span class="headline">Sign Up</span>
             </v-card-title>
@@ -88,18 +88,14 @@
                 <v-row>
                   <v-col cols="12">
                     <v-text-field
+                      v-model="sUsername"
                       label="Username"
                       required
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
-                      label="Email"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
+                      v-model="sPassword"
                       label="Password"
                       type="password"
                       required
@@ -126,6 +122,7 @@
           </form>
         </v-card>
       </v-dialog>
+
       <Nuxt/>
     </div>
   </v-app>
@@ -134,21 +131,41 @@
 <script>
 
 import AuthService from "~/services/AuthService";
+const axios = require('axios');
 
 export default {
   name: "default",
   data() {
-    return {email: "", password: "", loginDialog: false, signupDialog: false, isLogged:true}
+    return {username: "", password: "",sUsername: "", sPassword: "", loginDialog: false, signupDialog: false, isLogged: AuthService.isLogged(),error:[]}
   },
   methods: {
-    login () {
-      AuthService.login()
+    async login() {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            username: this.username,
+            password: this.password
+          }
+        }).then((value => {
+          sessionStorage.setItem("token", value.data.access);
+          this.isLogged = AuthService.isLogged();
+          this.loginDialog = false;
+        }));
+      } catch (e) {
+        this.error = e.response.data.message
+      }
     },
-    signup(){
-      this.signupDialog = false;
+    signup() {
+      this.$axios.$post('/chat/account/register',{username:this.sUsername,password:this.sPassword}).then((value)=>{
+        console.log(value);
+        this.signupDialog = false;
+      }).catch((error)=>{
+        console.log(error)
+      });
     },
-    logout(){
-      //TODO: Close Session, remove storage
+    logout() {
+      sessionStorage.removeItem("token");
+      this.isLogged = AuthService.isLogged();
     }
   }
 }
