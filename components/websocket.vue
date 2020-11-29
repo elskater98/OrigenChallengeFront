@@ -55,7 +55,13 @@ export default {
                     'clientX': p
                   })
                 );
-            }
+              } else {
+                x.inputs[i].value = arr[i];
+                x.inputs[i].dispatchEvent(
+                new Event('change', {
+                })
+              );
+              }
             }
           x.inputs[i].onchange = tmp;
         }
