@@ -26,23 +26,35 @@ export default {
         return;
       }
       console.log('rec!', jsonData);
-      if (!x.hashList.has(hashmap)){
+      if (x.hashList != hashmap){
+        x.hashList = hashmap;
         let arr = jsonData.message;
         console.log(arr);
         for (let i = 0; i < arr.length; i++){
           let tmp = x.inputs[i].onchange;
           x.inputs[i].onchange = null;
-          if (x.inputs[i].checked != arr[i]){
-            x.inputs[i].dispatchEvent(
-              new MouseEvent('click', {
-                'view': window,
-                'bubbles': true,
-                'cancelable': true
-              })
-            );
+          if (x.inputs[i].type == 'checkbox'){
+            if (x.inputs[i].checked != arr[i]){
+              x.inputs[i].dispatchEvent(
+                new MouseEvent('click', {
+                  'view': window,
+                  'bubbles': true,
+                  'cancelable': true
+                })
+              );
+              x.inputs[i].checked = arr[i];
+            }
             x.inputs[i].onchange = tmp;
-          }
-          x.inputs[i].checked = arr[i];
+          } else {
+            if (x.inputs[i].value != arr[i]){
+                x.inputs[i].value = arr[i];
+                x.inputs[i].dispatchEvent(
+                  new Event('mousemove ', {
+                    percent: x.inputs[i].value
+                  })
+                );
+              }
+            }
         }
         //Change the changes
       }
@@ -76,9 +88,12 @@ export default {
         console.log('checkbox', getByType(item, 'checkbox'));
         return getByType(item, 'checkbox');
       } else if (cl.includes('number')){
-        let tt = getByType(item, 'text');
-        if (tt != null){
-          return tt;
+        let c = item.getElementsByClassName('slider-fg')[0];
+        let c2 = getByType(item, 'text');
+        if (c2 != null){
+          c.onmouseup = function (e) { x.sendChange(e); };
+          c.ondrag = function (e) { x.sendChange(e); };
+          return [c, c.style.width];
         }
       }
       //} else if (cl.includes('string')){
@@ -109,12 +124,7 @@ export default {
     let y = generateArr();
     x.inputs = y[0];
 
-    x.callback_render = []
     for(let i = 0; i < x.inputs.length; i++){
-      let tmp = x.inputs[i].change;
-      console.log('iepa');
-
-      console.log('iepa2', x.inputs[i].parentElement.parentElement.change);
       x.inputs[i].onchange = function (e) { x.sendChange(e); }  
     }
     console.log(y[1]);
@@ -124,7 +134,7 @@ export default {
     sendChange() {
       let msg = JSON.stringify(this.getChanges());
       console.log('Log', msg);
-      this.hashList.add(md5(msg));
+      this.hashList = md5(msg);
       this.connection.send(msg);
     },
     getChanges() {

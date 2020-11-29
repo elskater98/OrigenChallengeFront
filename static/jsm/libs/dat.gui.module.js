@@ -1703,8 +1703,14 @@ var NumberControllerSlider = function ( _NumberController ) {
 		function onMouseDrag( e ) {
 
 			e.preventDefault();
-			var bgRect = _this.__background.getBoundingClientRect();
-			_this.setValue( map( e.clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ) );
+			console.log(e.percent);
+			if (e.percent != undefined){
+				_this.setValue( e.percent );
+			} else {
+				var bgRect = _this.__background.getBoundingClientRect();
+				_this.setValue( map( e.clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ) );
+				console.log(_this.value);
+			}
 			return false;
 
 		}
