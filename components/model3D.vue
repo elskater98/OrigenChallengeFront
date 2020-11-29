@@ -2,6 +2,22 @@
   <div>
     <div id="3DContainer"></div>
     <script type="module">
+
+      this.connection = new WebSocket("ws://josalhor.ddns.net:7987/ws/chat/example/")
+      let x = this;
+      this.connection.onmessage = function (event) {
+        let aux = JSON.parse(event.data);
+        const res = md5(JSON.stringify(aux));
+        if (!x.sent_local.has(res)){
+          x.summary = aux.message.summary;
+        }
+      }
+
+      this.connection.onopen = function (event) {
+        console.log(event)
+        console.log("Successfully connected to the echo websocket server...")
+      }
+
       import * as THREE from "../build/three.module.js";
 
       import { GUI } from "../jsm/libs/dat.gui.module.js";

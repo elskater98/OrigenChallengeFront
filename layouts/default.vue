@@ -20,8 +20,15 @@
           </v-btn>
         </div>
         <div v-show="isLogged">
-          <v-btn depressed  @click="notDialog=true">
-            <v-icon medium>mdi-bell-ring</v-icon>
+          <v-btn depressed @click="projectDialog=true">
+            <v-icon medium>mdi-book</v-icon>
+            Create Project
+          </v-btn>
+          <v-btn depressed @click="notDialog=true">
+            <v-badge right color="secondary">
+              <v-icon medium>mdi-bell-ring</v-icon>
+              <span slot="badge"> 1 </span>
+            </v-badge>
           </v-btn>
           <v-btn depressed @click="logout">Log out
           </v-btn>
@@ -125,51 +132,93 @@
       </v-dialog>
 
       <v-dialog max-width="600px" v-model="notDialog">
-       <v-card>
-         <v-card-text>
-           <!--for-->
-           <v-banner two-line>
-             <v-avatar
-               slot="icon"
-               color="deep-purple accent-4"
-               size="40"
-             >
-               <v-icon
-                 icon="mdi-lock"
-                 color="white"
-               >
-                 mdi-lock
-               </v-icon>
-             </v-avatar>
+        <v-card>
+          <v-card-text>
+            <!--for-->
+            <v-banner two-line>
+              <v-avatar
+                slot="icon"
+                color="deep-purple accent-4"
+                size="40"
+              >
+                <v-icon
+                  icon="mdi-lock"
+                  color="white"
+                >
+                  mdi-lock
+                </v-icon>
+              </v-avatar>
 
-             Three line text string example with two actions. One to two lines is preferable. Three lines should be considered the maximum string length on desktop in order to keep messages short and actionable.
+              Three line text string example with two actions. One to two lines is preferable. Three lines should be
+              considered the maximum string length on desktop in order to keep messages short and actionable.
 
-             <template v-slot:actions>
-               <v-btn
-                 text
-                 color="deep-purple accent-4"
-               >
-                 Action
-               </v-btn>
-               <v-btn
-                 text
-                 color="deep-purple accent-4"
-               >
-                 Action
-               </v-btn>
-             </template>
-           </v-banner>
+              <template v-slot:actions>
+                <v-btn
+                  @click="acceptInvitation"
+                  text
+                  color="deep-purple accent-4"
+                >Accept
+                </v-btn>
+                <v-btn
+                  @click="rejectInvitation"
+                  text
+                  color="deep-purple accent-4"
+                >Reject
+                </v-btn>
+              </template>
+            </v-banner>
 
-         </v-card-text>
-         <v-card-actions>
-           <v-spacer></v-spacer>
-           <v-btn
-             color="blue darken-1"
-             text
-             @click="notDialog = false">Close
-           </v-btn>
-         </v-card-actions>
-       </v-card>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog max-width="600px" v-model="projectDialog">
+        <v-card>
+          <form method="post" @submit.prevent="createProject">
+          <v-card-text>
+            <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="projectName"
+                      label="Project Name"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-container fluid>
+                      <v-layout wrap>
+                        <v-flex xs12>
+                          <v-combobox multiple
+                                      v-model="selectTags"
+                                      label="Invite Users"
+                                      append-icon
+                                      chips
+                                      deletable-chips
+                                      class="tag-input"
+                                      @keyup.tab="updateTags"
+                                      @paste="updateTags">
+                          </v-combobox>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-col>
+                  <v-col cols="12">
+                  </v-col>
+                </v-row>
+
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              type="submit">Create
+            </v-btn>
+          </v-card-actions>
+          </form>
+        </v-card>
       </v-dialog>
 
       <Nuxt/>
@@ -180,12 +229,27 @@
 <script>
 
 import AuthService from "~/services/AuthService";
+
 const axios = require('axios');
 
 export default {
   name: "default",
   data() {
-    return {username: "", password: "",sUsername: "", sPassword: "", loginDialog: false, signupDialog: false, notDialog: false, isLogged: AuthService.isLogged(),error:[]}
+    return {
+      selectTags:[],
+      projectName: "",
+      invite: [],
+      username: "",
+      password: "",
+      sUsername: "",
+      sPassword: "",
+      loginDialog: false,
+      signupDialog: false,
+      notDialog: false,
+      projectDialog: false,
+      isLogged: AuthService.isLogged(),
+      error: []
+    }
   },
   methods: {
     async login() {
@@ -204,17 +268,59 @@ export default {
         this.error = e.response.data.message
       }
     },
+
     signup() {
-      this.$axios.$post('/chat/account/register',{username:this.sUsername,password:this.sPassword}).then((value)=>{
+      this.$axios.$post('/chat/account/register', {
+        username: this.sUsername,
+        password: this.sPassword
+      }).then((value) => {
         console.log(value);
         this.signupDialog = false;
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       });
     },
+
     logout() {
       sessionStorage.removeItem("token");
       this.isLogged = AuthService.isLogged();
+    },
+
+    createProject(){
+      console.log(this.selectTags,this.projectName);
+
+      //Create Project
+      /*this.$axios.$post('/chat/sessions/').then((value => {
+        console.log(value)
+      }));*/
+
+      //Invite users
+      if(this.selectTags.length > 1){
+        this.$axios.$post('/').then((value => {
+          console.log(value)
+        }));
+      }
+
+      //Init Values
+      this.projectDialog = false;
+      this.projectName = "";
+      this.selectTags = [];
+    },
+
+    acceptInvitation(){
+
+    },
+
+    rejectInvitation(){
+
+    },
+    updateTags() {
+      this.$nextTick(() => {
+        this.select.push(...this.search.split(","));
+        this.$nextTick(() => {
+          this.search = "";
+        });
+      });
     }
   }
 }
