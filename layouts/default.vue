@@ -287,12 +287,10 @@ export default {
     },
 
     createProject(){
-      console.log(this.selectTags,this.projectName);
-
       //Create Project
-      /*this.$axios.$post('/chat/sessions/').then((value => {
+      this.$axios.$post('/chat/sessions/',{name:this.projectName}).then((value => {
         console.log(value)
-      }));*/
+      }));
 
       //Invite users
       if(this.selectTags.length > 1){
