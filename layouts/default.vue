@@ -3,15 +3,15 @@
     <div>
       <v-toolbar dark>
         <!--<v-toolbar-title>Nuxt Template</v-toolbar-title>-->
-        <v-btn to="/" depressed nuxt>
+        <!--<v-btn to="/" depressed nuxt>
           <v-icon medium>mdi-home</v-icon>
           Home
-        </v-btn>
+        </v-btn>-->
         <v-btn to="/docs" depressed nuxt>My Collabs</v-btn>
         <v-spacer></v-spacer>
         <div v-show="!isLogged">
           <v-btn depressed @click="signupDialog=true">
-            <v-icon medium>mdi-account</v-icon>
+            <v-icon medium>mdi-account-plus</v-icon>
             Sign Up
           </v-btn>
           <v-btn depressed @click="loginDialog=true">
@@ -30,7 +30,7 @@
               <span slot="badge"> 1 </span>
             </v-badge>
           </v-btn>
-          <v-btn depressed @click="logout">Log out
+          <v-btn depressed @click="logout">Log out <v-icon>mdi-exit-to-app</v-icon>
           </v-btn>
         </div>
 

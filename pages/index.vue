@@ -1,10 +1,13 @@
 <template>
-<div></div>
+
 </template>
 
 <script>
 export default {
-  name: "index"
+  name: "index",
+  mounted() {
+    this.$router.push({path:'/docs'});
+  }
 }
 </script>
 
