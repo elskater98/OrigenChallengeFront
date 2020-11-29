@@ -49,7 +49,8 @@ export default {
 
     },
     selectItem(item) {
-      let route = this.$route.name + '/' + item.session_id;
+      let uuid = md5("" + item.session_id).replace(/\D/g,'');
+      let route = this.$route.name + '/' + uuid;
       this.$router.push({path: route});
     }
   }
