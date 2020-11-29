@@ -2,16 +2,15 @@
   <v-app>
     <div>
       <v-toolbar dark>
-        <!--<v-toolbar-title>Nuxt Template</v-toolbar-title>-->
-        <v-btn to="/" depressed nuxt>
+        <!--<v-btn to="/" depressed nuxt>
           <v-icon medium>mdi-home</v-icon>
           Home
-        </v-btn>
+        </v-btn>-->
         <v-btn to="/docs" depressed nuxt>My Collabs</v-btn>
         <v-spacer></v-spacer>
         <div v-show="!isLogged">
           <v-btn depressed @click="signupDialog=true">
-            <v-icon medium>mdi-account</v-icon>
+            <v-icon medium>mdi-account-plus</v-icon>
             Sign Up
           </v-btn>
           <v-btn depressed @click="loginDialog=true">
@@ -31,6 +30,7 @@
             </v-badge>
           </v-btn>
           <v-btn depressed @click="logout">Log out
+            <v-icon>mdi-exit-to-app</v-icon>
           </v-btn>
         </div>
 
@@ -175,8 +175,8 @@
       <v-dialog max-width="600px" v-model="projectDialog">
         <v-card>
           <form method="post" @submit.prevent="createProject">
-          <v-card-text>
-            <v-container>
+            <v-card-text>
+              <v-container>
                 <v-row>
                   <v-col cols="12">
                     <v-text-field
@@ -207,20 +207,20 @@
                   </v-col>
                 </v-row>
 
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="blue darken-1"
-              text
-              type="submit">Create
-            </v-btn>
-          </v-card-actions>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                type="submit">Create
+              </v-btn>
+            </v-card-actions>
           </form>
         </v-card>
       </v-dialog>
-
+      <v-snackbar v-model="error">{{ error_message }}</v-snackbar>
       <Nuxt/>
     </div>
   </v-app>
@@ -236,7 +236,7 @@ export default {
   name: "default",
   data() {
     return {
-      selectTags:[],
+      selectTags: [],
       projectName: "",
       invite: [],
       username: "",
@@ -248,7 +248,8 @@ export default {
       notDialog: false,
       projectDialog: false,
       isLogged: AuthService.isLogged(),
-      error: []
+      error: false,
+      error_message: ""
     }
   },
   methods: {
@@ -263,9 +264,12 @@ export default {
           sessionStorage.setItem("token", value.data.access);
           this.isLogged = AuthService.isLogged();
           this.loginDialog = false;
+          this.username = "";
+          this.password = "";
         }));
       } catch (e) {
-        this.error = e.response.data.message
+        this.error = true;
+        this.error_message = e;
       }
     },
 
@@ -276,8 +280,11 @@ export default {
       }).then((value) => {
         console.log(value);
         this.signupDialog = false;
+        this.sPassword = "";
+        this.sUsername = "";
       }).catch((error) => {
-        console.log(error)
+        this.error = true;
+        this.error_message = error;
       });
     },
 
@@ -286,19 +293,23 @@ export default {
       this.isLogged = AuthService.isLogged();
     },
 
-    createProject(){
-      console.log(this.selectTags,this.projectName);
-
+    createProject() {
       //Create Project
-      /*this.$axios.$post('/chat/sessions/').then((value => {
+      this.$axios.$post('/chat/sessions/', {name: this.projectName}).then((value => {
         console.log(value)
-      }));*/
+      })).catch(e => {
+        this.error = true;
+        this.error_message = e;
+      });
 
       //Invite users
-      if(this.selectTags.length > 1){
+      if (this.selectTags.length > 1) {
         this.$axios.$post('/').then((value => {
           console.log(value)
-        }));
+        })).catch(e => {
+          this.error = true;
+          this.error_message = e;
+        });
       }
 
       //Init Values
@@ -307,11 +318,11 @@ export default {
       this.selectTags = [];
     },
 
-    acceptInvitation(){
+    acceptInvitation() {
 
     },
 
-    rejectInvitation(){
+    rejectInvitation() {
 
     },
     updateTags() {

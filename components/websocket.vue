@@ -16,7 +16,7 @@ export default {
   },
   created(){
 
-    this.connection = new WebSocket("wss://josalhor.ddns.net:7987/ws/chat/example/")
+    this.connection = new WebSocket("wss://josalhor.ddns.net:7987/ws/chat/"+this.$route.params.id+"/")
     let x = this;
 
     this.connection.onmessage = function (event) {
@@ -44,17 +44,20 @@ export default {
               );
               x.inputs[i].checked = arr[i];
             }
-            x.inputs[i].onchange = tmp;
           } else {
-            if (x.inputs[i].value != arr[i]){
-                x.inputs[i].value = arr[i];
+            //x.inputs[i].value = arr[i];
+            let p = parseFloat(arr[i]);
+            if (!isNaN(p)){
+                console.log(p);
+                p = p * 1000;
                 x.inputs[i].dispatchEvent(
-                  new Event('mousemove ', {
-                    percent: x.inputs[i].value
+                  new MouseEvent('onmouseout', {
+                    'clientX': p
                   })
                 );
-              }
             }
+            }
+          x.inputs[i].onchange = tmp;
         }
         //Change the changes
       }
@@ -66,7 +69,7 @@ export default {
     }
 
     setTimeout(function() {
-    
+
     /* methods */
     function getByType(on, tp){
       var inputs = on.getElementsByTagName('input');
@@ -93,7 +96,8 @@ export default {
         if (c2 != null){
           c.onmouseup = function (e) { x.sendChange(e); };
           c.ondrag = function (e) { x.sendChange(e); };
-          return [c, c.style.width];
+          console.log(c2[1]);
+          return [c, c2[1]];
         }
       }
       //} else if (cl.includes('string')){

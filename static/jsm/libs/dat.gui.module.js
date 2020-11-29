@@ -1690,6 +1690,7 @@ var NumberControllerSlider = function ( _NumberController ) {
 		_this2.__foreground = document.createElement( 'div' );
 		dom.bind( _this2.__background, 'mousedown', onMouseDown );
 		dom.bind( _this2.__background, 'touchstart', onTouchStart );
+		dom.bind( _this2.__foreground, 'onmouseout', forceTest );
 		dom.addClass( _this2.__background, 'slider' );
 		dom.addClass( _this2.__foreground, 'slider-fg' );
 		function onMouseDown( e ) {
@@ -1700,17 +1701,20 @@ var NumberControllerSlider = function ( _NumberController ) {
 			onMouseDrag( e );
 
 		}
+
+		function forceTest( e ){
+			e.preventDefault();
+			let p = e.clientX / 1000;
+			_this.setValue( p );
+			console.log(p);
+			return false;
+		}
 		function onMouseDrag( e ) {
 
 			e.preventDefault();
-			console.log(e.percent);
-			if (e.percent != undefined){
-				_this.setValue( e.percent );
-			} else {
-				var bgRect = _this.__background.getBoundingClientRect();
-				_this.setValue( map( e.clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ) );
-				console.log(_this.value);
-			}
+			var bgRect = _this.__background.getBoundingClientRect();
+			_this.setValue( map( e.clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ) );
+			//console.log(map( e.clientX, bgRect.left, bgRect.right, _this.__min, _this.__max ));
 			return false;
 
 		}

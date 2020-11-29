@@ -1,6 +1,8 @@
 <template>
-
-
+  <div>
+    <model3-d></model3-d>
+    <websocket></websocket>
+  </div>
 </template>
 
 <script>
