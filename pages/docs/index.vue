@@ -22,17 +22,23 @@
         </template>
       </v-simple-table>
     </v-container>
+  <div>
+    <model3-d></model3-d>
+    <websocket></websocket>
+  </div>
   </div>
 </template>
 
 <script>
 import Model3D from "~/components/model3D";
+import Websocket from '../../components/websocket.vue';
 const md5 = require('md5');
 export default {
 
   name: "index",
-  components: {Model3D},
+  components: {Model3D, Websocket},
   data() {
+ 
     return {sessions:[]}
   },
   created () {

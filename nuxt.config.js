@@ -4,7 +4,7 @@ import fs from 'fs'
 
 export default {
   server: {
-    port: 7986, // default: 3000
+    port: 7985, // default: 3000
     host: '0.0.0.0', // default: localhost
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'key.pem')),
