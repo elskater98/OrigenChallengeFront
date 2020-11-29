@@ -16,7 +16,7 @@ export default {
   },
   created(){
 
-    this.connection = new WebSocket("wss://josalhor.ddns.net:7987/ws/chat/example/")
+    this.connection = new WebSocket("wss://josalhor.ddns.net:7987/ws/chat/"+this.$route.params.id)
     let x = this;
 
     this.connection.onmessage = function (event) {
@@ -54,7 +54,7 @@ export default {
     }
 
     setTimeout(function() {
-    
+
     /* methods */
     function getByType(on, tp){
       var inputs = on.getElementsByTagName('input');
@@ -115,7 +115,7 @@ export default {
       console.log('iepa');
 
       console.log('iepa2', x.inputs[i].parentElement.parentElement.change);
-      x.inputs[i].onchange = function (e) { x.sendChange(e); }  
+      x.inputs[i].onchange = function (e) { x.sendChange(e); }
     }
     console.log(y[1]);
     }, 2000);

@@ -22,10 +22,6 @@
         </template>
       </v-simple-table>
     </v-container>
-  <div>
-    <model3-d></model3-d>
-    <websocket></websocket>
-  </div>
   </div>
 </template>
 
@@ -38,7 +34,7 @@ export default {
   name: "index",
   components: {Model3D, Websocket},
   data() {
- 
+
     return {sessions:[]}
   },
   created () {
